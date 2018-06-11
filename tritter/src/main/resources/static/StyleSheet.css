@@ -1,0 +1,45 @@
+/*エリアごとのレイアウト設定*/
+#Site-Box{
+    width :1440px;
+    margin : 5px auto
+}
+.Message{
+	max-height: 20px;
+	margin:0 auto;
+    text-align: center;
+}
+.RepImg{
+    max-height: 20px;
+    max-width:20px;
+     height: auto;
+     width: auto;
+}
+.Title{
+    background-color:#80ffff;
+}
+.TimeLine{
+    float: left;
+    width:700px; 
+    background-color:#FFFFFF;
+    overflow: scroll;/*スクロールバー*/
+    height:900px;/*この値を超えたらスクロール*/
+}
+.Notification{
+	float: right;
+    width:700px; 
+    height:auto;
+    background-color:#80ffff;
+}
+.Tweet{
+   float: right;
+    width:700px; 
+    background-color:#ffffff;
+}
+
+
+.ButtonArea{
+    float: right;
+    width:700px; 
+    background-color:#80ffff;
+}
+

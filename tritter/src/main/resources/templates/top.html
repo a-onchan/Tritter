@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+
+<head>
+
+<title>Tritter</title>
+<script src="http://code.jquery.com/jquery-2.0.0.js"></script>
+
+<link rel="shortcut icon" href="favicon.ico" />
+<meta charset="UTF-8" />
+
+<link rel="StyleSheet" type="text/css" href="StyleSheet.css" />
+<!--全体のレイアウト-->
+<link rel="StyleSheet" type="text/css" href="Tweet.css" />
+<!--Tweetのレイアウト-->
+<link rel="StyleSheet" type="text/css" href="TL.css" />
+<!--TLのレイアウト-->
+<link rel="StyleSheet" type="text/css" href="ButtonArea.css" />
+<!--ButtonAreaのレイアウト-->
+<link rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous"/>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script>
+var countFav =0;
+var countRt =0;
+$(function(){
+    var countElm = $('.favcount'),
+    countSpeed = 150 + Math.floor( Math.random() * 150);
+ 
+    countElm.each(function(){
+        var self = $(this),
+        countMax = self.attr('data-num'),
+        thisCount = self.text(),
+        countTimer;
+ 
+        function timer(){
+            countTimer = setInterval(function(){
+                var countNext = thisCount++;
+                if(countNext%9==0 || countNext%19 ==0){
+                    thisCount +=5;
+                }
+                countFav = countNext;
+                self.text(countNext);
+ 
+                if(countNext == countMax){
+                    clearInterval(countTimer);
+                }
+            },countSpeed);
+        }
+        timer();
+    });
+ 
+});
+
+$(function(){
+    var countElm = $('.rtcount'),
+    countSpeed = 150 + Math.floor( Math.random() * 150);
+ 
+    countElm.each(function(){
+        var self = $(this),
+        countMax = self.attr('data-num'),
+        thisCount = self.text(),
+        countTimer;
+ 
+        function timer(){
+            countTimer = setInterval(function(){
+                var countNext = thisCount++;
+                if(countNext%7==0){
+                    thisCount +=11;
+                }
+                countRt = countNext;
+                self.text(countNext);
+ 
+                if(countNext == countMax){
+                    clearInterval(countTimer);
+                }
+            },countSpeed);
+        }
+        timer();
+    });
+ 
+});
+
+$(function(){
+    var countElm = $('.rtfavcount'),
+    countSpeed = 150 + Math.floor( Math.random() * 100);
+ 
+    countElm.each(function(){
+        var self = $(this),
+        countMax = self.attr('data-num'),
+        thisCount = self.text(),
+        countTimer;
+ 
+        function timer(){
+            countTimer = setInterval(function(){
+                var countNext = countFav + countRt;
+                if(countNext%10==0){
+                	$(function(){
+                		  $(".Message:not(:animated)").fadeIn("slow",function(){
+                		    $(this).delay(800).fadeOut("slow");
+                		  });
+                		});
+                }
+                self.text(countNext);
+ 
+                if(countNext == countMax){
+                    clearInterval(countTimer);
+                }
+            },countSpeed);
+        }
+        timer();
+    });
+ 
+});
+</script>
+
+
+</head>
+
+<body>
+
+
+    <div class = "container-fluid">
+	<div id="Site-Box">
+		<!--ページ全体の定義-->
+		<div class="Message">
+          <span th:text="${rep}"></span>
+        </div> 
+
+
+		<div class="Title">
+			<!--タイトルエリア-->
+			<h1>Tritter</h1>
+		</div>
+
+		<div class="TimeLine">
+			<!--タイムラインエリア-->
+           
+			<h1>TimeLine</h1>        
+
+            
+
+			<!--th:each-->
+			<div th:each="tweet : ${tweets}">
+				<div class="col-md-12" >
+                   <div th:id ="${tweet.tweetId}">
+					<!--タイムラインの一つのツイート-->
+					
+						<div class="TLacountImage">
+							<!--TLアイコン表示-->
+							<img th:src="${tweet.accountimgURL}" alt="画像"  class = "img-responsive img-circle"/>
+
+						</div>
+
+
+						<div class="TLaccountName">
+							<p>
+								<font size="3"><span th:text="${tweet.accountName}"></span></font> <font
+									size="2">@<span th:text="${tweet.screenName}"></span></font>
+							</p>
+						</div>
+
+                        <!-- ツイートIDを送信 -->
+                        <div class = "Send">
+                        <form method="post" th:action="@{/setTweet}">
+                          <input name="tweetId" type="hidden" th:value="${tweet.tweetId}" />
+                          <button type="submit" class="btn btn-success">表示</button>
+                        </form>
+                        </div>
+
+						<div class="TweetContents">
+							<!--TLツイート内容表示-->
+							<font size="2"><p>
+									<span th:text="${tweet.tweetContents}"></span>
+								</p></font>
+						</div>
+
+						<div class="TLtweetImg">
+							<!--ツイート写真があれば表示-->
+							<img th:src="${tweet.tweetimgURL}" alt="" class="TLtweetImg" />
+						</div>
+
+						<div class="Rep">
+							<!--TLリプライ内容表示-->
+							<div class="button">
+								<button type="tlRepButton" class="btn btn-default">⤴</button>
+							</div>
+
+							<div class="button">
+								<form method="post" th:action="@{/rtButton}">
+									<!-- りついぼたん押したときの処理 -->
+									<input name="tweetId" type="hidden" th:value="${tweetId}" />
+									　　　　　<button type="submit" name="rtButton" class="btn btn-default">
+										<span th:text="${tweet.rtIcon}"></span>
+									</button>
+								</form>
+							</div>
+							<div class="text">
+                              
+								<span th:text="${tweet.Rt}"></span>
+							
+								
+							</div>
+
+							<div class="button">
+								<form method="post" th:action="@{/favButton}">
+									<!-- ふぁぼぼたん押したときの処理 -->
+									<input name="tweetId" type="hidden" th:value="${tweetId}" />
+									　　　　　<button type="submit" name="tlFavButton" class="btn btn-default">
+										<span th:text="${tweet.favIcon}"></span>
+									</button>
+								</form>
+							</div>
+							
+							<span th:text="${tweet.Fav}"></span>
+                            
+						</div>
+					<p>　　</p>
+				</div>
+				
+			</div>
+			</div>
+		</div>
+		 <div th:each="tweetBox : ${tweet}">
+        <div class= "Notification">
+        <!--通知エリア-->
+            <p>ツイート　<span th:text="${tweetBox.tweetCount}"></span>　　フォロー　<span th:text="${tweetBox.friendsCount}"></span>　　フォロワー　<span th:text="${tweetBox.followersCount}"></span>　　通知　<i class="glyphicon glyphicon-bell"></i>  <span th:class="${rtfavcount}" data-num="10000"><span th:text="${notificationCount}"></span></span></p>
+        </div>
+        </div>
+		<div class="Tweet">
+			<!--ツイートのBox-->
+            <div th:each="tweetBox : ${tweet}">
+			<div class="acountimage">
+				<!--アイコン表示-->
+				<img th:src="${tweetBox.accountimgURL}" alt="画像" class = "img-responsive img-circle2" />
+			</div>
+
+
+			<div id="AccountName">
+				<h2><span th:text="${tweetBox.accountName}">
+				</span></h2>
+				<p>@<span th:text="${tweetBox.screenName}"></span></p>
+			</div>
+
+
+			<div class="TweetContents">
+				<!--ツイート内容表示-->
+				<p></p>
+                <span th:text="${tweetBox.tweetContents}"></span>
+			</div>
+            <p></p>
+			<div id="Tweetimg">
+				<!--ツイート写真があれば表示-->
+				<img th:src="${tweetBox.tweetimgURL}" alt="" id="Tweetimg" />
+			</div>
+
+			<div id="RT">
+				<!--RT表示-->
+				<h3><font color="#33ccff"><span th:class="${rtcount}" data-num="10000"><span th:text="${tweetBox.Rt}"></span></span></font></h3>
+				<span>リツイート</span>
+			</div>
+
+			<div id="Good">
+				<!--いいね表示-->
+				<span><h3><font color="#33ccff"><span th:class="${favcount}" data-num="10000"><span th:text="${tweetBox.Fav}"></span></span></font></h3></span>
+				<span>いいね</span>
+			</div>
+
+			<div id="Day">
+				<!--日にち表示-->
+				<span th:text="${tweetBox.tweetTime}"></span>
+			</div>
+
+			<div class="Rep">
+
+				<div class="button">
+					<button type="button" name="repButton" class="btn btn-default">⤴</button>
+				</div>
+				<div class="button">
+					<form method="post" th:action="@{/rtButton}">
+						<!-- りついぼたん押したときの処理 -->
+						<input name="tweetId" type="hidden" th:value="${tweetId}" />
+						　　　　　<button type="submit" name="rtButton" class="btn btn-default">
+							<span th:text="${tweetBox.rtIcon}"></span>
+						</button>
+
+					</form>
+				</div>
+				<div class="text">
+					<span th:class="${rtcount}" data-num="10000"><span th:text="${tweetBox.Rt}"></span></span>
+				</div>
+
+
+				<div class="button">
+					<form method="post" th:action="@{/favButton}">
+						<!-- ふぁぼぼたん押したときの処理 -->
+						<input name="tweetId" type="hidden" th:value="${tweetId}" />
+						　　　　　<button type="submit" name="favButton" class="btn btn-default">
+							<span th:text="${tweetBox.favIcon}"></span>
+						</button>
+
+					</form>
+				</div>
+
+				<span th:class="${favcount}" data-num="10000"><span th:text="${tweetBox.Fav}"></span></span>
+
+			</div>
+         </div>
+		</div>
+		
+		<div class="ButtonArea">
+			<!--ボタン配置エリア-->
+			<h2>ButtonArea</h2>
+			<form method="post" th:action="@{/Flaming}">
+			<input name="tweetId" type="hidden" th:value="${tweetId}" />
+			     <button type="submit" class="btn btn-danger">炎上</button>
+			</form>
+			<form method="post" th:action="@{/rtFavInput}">
+                <input name="tweetId" type="hidden" th:value="${tweetId}" />
+				RT数変更<input type="number" name="rt" max="9999999" min="0"
+					th:value="${Rt}" /> ふぁぼ数変更<input type="number" name="fav"
+					max="9999999" min="0" th:value="${Fav}" />
+					
+					<button type="submit" class="btn btn-primary">変更</button>
+			</form>
+			<form method="post" th:action="@{/clear}">
+			    <input name="tweetId" type="hidden" th:value="${tweetId}" />
+				<button type="submit" class="btn btn-primary">クリア</button>
+			</form>
+			
+			<form method="post" th:action="@{/tweet}">
+               
+                <input type="text" name = "sendtweet"  th:text="${sendtweet}"/>
+                                      ツイート<input name="tweetId" type="hidden" th:value="${tweetId}" />
+                
+           </form>
+
+		</div>
+       
+	</div>
+	</div>
+<script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</body>
+</html>
