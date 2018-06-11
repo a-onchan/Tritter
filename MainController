@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 //追加
+//更新箇所
 import twitter4j.*;
 @Controller
 
@@ -47,7 +48,7 @@ public class MainController {
     
     
     
-
+//更新箇所２
     List<String> tweetimgURLList = new ArrayList<String>();
     @Autowired
     private JdbcTemplate jdbc;
